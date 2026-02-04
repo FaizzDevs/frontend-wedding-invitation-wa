@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply font-display bg-blush-pink text-deep-green overflow-x-hidden;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-font-smoothing: antialiased;
+    }
+    
+    @media (max-width: 768px) {
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            @apply bg-deep-green/5;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            @apply bg-deep-green/20 rounded-full;
+        }
+    }
+}
+
+@layer components {
+    .chat-wallpaper {
+        background-image: radial-gradient(circle at 2px 2px, rgba(18, 140, 126, 0.05) 1px, transparent 0);
+        background-size: 24px 24px;
+    }
+    
+    .safe-area-top {
+        padding-top: env(safe-area-inset-top, 20px);
+    }
+    
+    .safe-area-bottom {
+        padding-bottom: env(safe-area-inset-bottom, 20px);
+    }
+    
+    .glass-effect {
+        @apply backdrop-blur-lg bg-white/10 border border-white/20;
+    }
+    
+    .message-bubble {
+        @apply max-w-[85%] rounded-2xl p-3 shadow-sm;
+    }
+    
+    .message-bubble.sent {
+        @apply bg-primary/10 border border-primary/20 ml-auto;
+    }
+    
+    .message-bubble.received {
+        @apply bg-white/80 border border-deep-green/10 mr-auto;
+    }
+}
+
+@media (max-width: 768px) {
+    input, textarea {
+        font-size: 16px !important;
+    }
+}
