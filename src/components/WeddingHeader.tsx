@@ -42,7 +42,7 @@ const WeddingHeader = ({
                         animate={{ rotate: 360 }}
                         transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
                     >
-                        <Heart className="w-full h-full text-gold" />
+                        <Heart className="w-full h-full text-rose-500" />
                     </motion.div>
                 )}
             </motion.div>
@@ -67,7 +67,7 @@ const WeddingHeader = ({
                     animate={{ scale: [1, 1.1, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                 >
-                    <Heart className="w-8 h-8 text-primary/30" fill="currentColor" />
+                    <Heart className="w-8 h-8 text-rose-500/50" fill="currentColor" />
                 </motion.div>
             )}
         </div>

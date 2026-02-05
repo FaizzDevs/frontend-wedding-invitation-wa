@@ -9,20 +9,20 @@ const EnterChat = () => {
     const navigate = useNavigate()
     const [progress, setProgress] = useState(0)
 
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         setProgress(prev => {
-    //             if (prev >= 100) {
-    //                 clearInterval(interval)
-    //                 setTimeout(() => navigate('/chat'), 500)
-    //                 return 100
-    //             }
-    //             return prev + 5
-    //         })
-    //     }, 100)
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setProgress(prev => {
+                if (prev >= 100) {
+                    clearInterval(interval)
+                    setTimeout(() => navigate('/invitation'), 500)
+                    return 100
+                }
+                return prev + 5
+            })
+        }, 100)
 
-    //     return () => clearInterval(interval)
-    // }, [navigate])
+        return () => clearInterval(interval)
+    }, [navigate])
 
     return (
         <motion.div 
@@ -53,7 +53,7 @@ const EnterChat = () => {
                     From
                 </p>
                 <div className="flex items-center gap-1.5">
-                    <Heart className="w-5 h-5 text-primary" fill="currentColor" />
+                    <Heart className="w-5 h-5 text-rose-500" fill="currentColor" />
                     <span className="text-deep-green font-bold text-base">
                         FaizDini
                     </span>
@@ -61,7 +61,7 @@ const EnterChat = () => {
             </motion.div>
 
             <motion.div 
-                className="absolute top-10 right-10 size-20 opacity-20 grayscale brightness-50 contrast-150"
+                className="absolute top-10 right-10 size-20 opacity-20 text-rose-500"
                 animate={{ rotate: 360 }}
                 transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
             >
@@ -69,7 +69,7 @@ const EnterChat = () => {
             </motion.div>
 
             <motion.div 
-                className="absolute bottom-20 left-10 size-16 opacity-20 grayscale brightness-50 contrast-150"
+                className="absolute bottom-20 left-10 size-16 opacity-20 text-rose-500"
                 animate={{ rotate: -360 }}
                 transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
             >
