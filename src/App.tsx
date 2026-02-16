@@ -2,6 +2,8 @@ import { Routes, Route } from 'react-router-dom'
 import EnterChat from './pages/EnterChat'
 import { motion, AnimatePresence } from 'framer-motion'
 import Invitation from './pages/Invitation'
+import WeddingChat from './pages/WeddingChat'
+import GroupInfo from './pages/GroupInfo'
 
 function App() {
     return (
@@ -15,6 +17,8 @@ function App() {
                 <Routes>
                     <Route path='/' element={<EnterChat />} />
                     <Route path='/invitation' element={<Invitation />} />
+                    <Route path='/chat' element={<WeddingChat />} />
+                    <Route path='/info' element={<GroupInfo />} />
                 </Routes>
             </motion.div>
         </AnimatePresence>

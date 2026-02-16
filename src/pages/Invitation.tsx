@@ -38,7 +38,7 @@ const Invitation = () => {
         })
 
         setTimeout(() => {
-            navigate('/success')
+            navigate('/chat')
         }, 3000)
     }
 
@@ -108,7 +108,7 @@ const Invitation = () => {
                         Faiz & Dini
                     </h1>
 
-                    <p className='text-green-600 mb-6'>
+                    <p className='text-green-600 mb-6 text-sm'>
                         Invite you to join their special day celebration
                     </p>
                 </motion.div>
@@ -139,12 +139,12 @@ const Invitation = () => {
                     className="mb-8"
                 >
                     <Card className='border-0 bg-gradient-to-r from-emerald-50 to-green-50'>
-                        <CardContent className='p-6'>
+                        <CardContent className='p-5'>
                             <div className='flex items-center justify-between'>
                                 <div>
                                     <div className='flex items-center gap-2 mb-2'>
-                                        <Users className='w-5 h-5 text-emerald-600' />
-                                        <span className='font-semibold text-emerald-900'>150 guests joined</span>
+                                        <Users className='w-4 h-4 text-emerald-600' />
+                                        <span className='font-semibold text-emerald-900 text-sm'>150 guests joined</span>
                                     </div>
 
                                     <Progress value={75} className='h-2 bg-emerald-200' />
@@ -169,65 +169,42 @@ const Invitation = () => {
                 </motion.div>
 
                 <AnimatePresence mode='wait'>
-                    {hasJoined ? (
-                        <motion.div
-                            key="success"
-                            initial={{ scale: 0.8, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.8, opacity: 0 }}
-                            className='text-center'
+                    <motion.div
+                        key="buttons"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ delay: 0.7 }}
+                        className="space-y-4"
+                    >
+                        <Button
+                            size='lg'
+                            onClick={handleJoinGroup}
+                            disabled={isJoining}
+                            className='w-full h-10 text-base font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg hover:shadow-xl rounded-full'
                         >
-                            <Card className='border-0 bg-gradient-to-r from-emerald-50 to-green-50 mb-4'>
-                                <CardContent className='p-6'>
-                                    <CheckCircle className='w-16 h-16 text-emerald-600 mx-auto mb-4' />
-                                    <h3 className='text-xl font-bold text-emerald-900 mb-2'>
-                                        Welcome to the Group!! 🎉
-                                    </h3>
-                                    <p className='text-emerald-700 mb-4'>
-                                        You're now part of the celebration
-                                    </p>
-                                    <Progress value={100} className="h-2 bg-emerald-200" />
-                                </CardContent>
-                            </Card>
-                        </motion.div>
-                    ) : (
-                        <motion.div
-                            key="buttons"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ delay: 0.7 }}
-                            className="space-y-4"
-                        >
-                            <Button
-                                size='lg'
-                                onClick={handleJoinGroup}
-                                disabled={isJoining}
-                                className='w-full h-14 text-lg font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg hover:shadow-xl rounded-full'
-                            >
-                                {isJoining ? (
-                                    <>
-                                        <div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent' />
-                                        Joining Group
-                                    </>
-                                ) : (
-                                    <>
-                                        <Heart className='mr-2 h-5 w-5' />
-                                        Join Wedding Group
-                                    </>
-                                )}
-                            </Button>
-                        </motion.div>
-                    )}
+                            {isJoining ? (
+                                <>
+                                    <div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent' />
+                                    Joining Group
+                                </>
+                            ) : (
+                                <>
+                                    <Heart className='mr-2 h-4 w-4' />
+                                    Join Wedding Group
+                                </>
+                            )}
+                        </Button>
+                    </motion.div>
                 </AnimatePresence>
 
                 <motion.footer
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.9 }}
-                    className='mt-8 pt-6 border-t border-gray-200 text-center flex flex-col gap-4'
+                    className='mt-10 pt-6 border-t border-gray-200 text-center flex flex-col gap-4'
                 >
-                    <p className='text-sm text-green-600'>
+                    <p className='text-xs text-green-600'>
                         Created with <Heart className='inline w-3 h-3 text-rose-500' /> by FaizDini
                     </p>
                     <p className='text-xs text-green-500'>
