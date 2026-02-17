@@ -15,9 +15,9 @@ const LoadingScreen = ({
             <div className="h-1.5 w-full bg-white/50 rounded-full overflow-hidden">
                 <motion.div 
                     className="h-full bg-green-500 rounded-full shadow-[0_0_10px_rgba(37,211,102,0.4)]" 
-                    initial={{ width: '0%' }}
+                    initial={false}
                     animate={{ width: `${progress}%` }}
-                    transition={{ duration: 2, ease: 'easeInOut' }}
+                    transition={{ type: "tween", ease: "easeOut", duration: 0.3 }}
                 />
             </div>
 
@@ -26,9 +26,9 @@ const LoadingScreen = ({
                     animate={{ rotate: 360 }}
                     transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
                 >
-                    <RefreshCw className="text-green-500 w-5 h-5" />
+                    <RefreshCw className="text-green-500 size-4" />
                 </motion.div>
-                <p className="text-deep-green/70 text-sm font-semibold tracking-wide">
+                <p className="text-deep-green/70 text-xs font-semibold tracking-wide">
                     {message}
                 </p>
             </div>

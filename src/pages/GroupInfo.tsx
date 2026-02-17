@@ -161,18 +161,18 @@ const GroupInfo = () => {
         }
     }
 
-    const getStatusBadge = (status: Guest['status']) => {
-        switch (status) {
-            case 'attending':
-                return <div>Attending</div>
+    // const getStatusBadge = (status: Guest['status']) => {
+    //     switch (status) {
+    //         case 'attending':
+    //             return <div>Attending</div>
                 
-            case 'maybe':
-                return <div>Maybe</div>
+    //         case 'maybe':
+    //             return <div>Maybe</div>
 
-            case 'pending':
-                return <div>Pending</div>
-        }
-    }
+    //         case 'pending':
+    //             return <div>Pending</div>
+    //     }
+    // }
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-pink-50/50 to-white">
@@ -535,7 +535,7 @@ const GroupInfo = () => {
                     </div>
 
                     <div className="border-pink-100 rounded-s rounded-e">
-                        <div className="p-4">
+                        <div className="px-4">
                             <div className="flex items-center gap-4 cursor-pointer group">
                                 <div className="size-8 rounded-full bg-gradient-to-r from-[#25d366] to-[#128c7E] flex items-center justify-center group-hover:shadow-lg shadow-[#25d366]/20 transition-all">
                                     <UserPlus className="w-4 h-4 text-white" />

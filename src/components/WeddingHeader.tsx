@@ -53,10 +53,10 @@ const WeddingHeader = ({
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.8 }}
             >
-                <h1 className="text-deep-green text-2xl font-bold tracking-tight px-4">
+                <h1 className="text-deep-green text-xl font-bold tracking-tight px-4">
                     {title}
                 </h1>
-                <p className="text-deep-green/60 text-sm font-medium mt-1">
+                <p className="text-deep-green/60 text-xs font-medium mt-1">
                     {date}
                 </p>
             </motion.div>

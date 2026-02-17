@@ -2,12 +2,23 @@ import { Flower2, Heart } from "lucide-react"
 import LoadingScreen from "../components/LoadingScreen"
 import WeddingHeader from "../components/WeddingHeader"
 import { useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { motion } from "framer-motion"
+
+type Particle = {
+    size: number
+    left: number
+    top: number
+    xOffset: number
+    duration: number
+}
+
+
 
 const EnterChat = () => {
     const navigate = useNavigate()
     const [progress, setProgress] = useState(0)
+    const [particles, setParticles] = useState<Particle[]>([])
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -39,7 +50,7 @@ const EnterChat = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 }}
                 >
-                    <LoadingScreen />
+                    <LoadingScreen progress={progress} />
                 </motion.div>
             </div>
 
@@ -65,7 +76,7 @@ const EnterChat = () => {
                 animate={{ rotate: 360 }}
                 transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
             >
-                <Flower2 className="w-full h-full" />
+                <Flower2 className="size-14" />
             </motion.div>
 
             <motion.div 
@@ -73,36 +84,31 @@ const EnterChat = () => {
                 animate={{ rotate: -360 }}
                 transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
             >
-                <Heart className="w-full h-full" />
+                <Heart className="size-14" />
             </motion.div>
 
-            {[...Array(5)].map((_, i) => (
+            {particlesRef.current.map((p, i) => (
                 <motion.div
                     key={i}
                     className="absolute rounded-full bg-gold/10"
                     style={{
-                        // eslint-disable-next-line react-hooks/purity
-                        width: Math.random() * 10 + 5,
-                        // eslint-disable-next-line react-hooks/purity
-                        height: Math.random() * 10 + 5,
-                        // eslint-disable-next-line react-hooks/purity
-                        left: `${Math.random() * 100}%`,
-                        // eslint-disable-next-line react-hooks/purity
-                        top: `${Math.random() * 100}%`,
+                    width: p.size,
+                    height: p.size,
+                    left: `${p.left}%`,
+                    top: `${p.top}%`,
                     }}
                     animate={{
-                        y: [0, -20, 0],
-                        // eslint-disable-next-line react-hooks/purity
-                        x: [0, Math.random() * 10 - 5, 0],
+                    y: [0, -20, 0],
+                    x: [0, p.xOffset, 0],
                     }}
                     transition={{
-                        // eslint-disable-next-line react-hooks/purity
-                        duration: Math.random() * 3 + 2,
-                        repeat: Infinity,
-                        ease: "easeInOut",
+                    duration: p.duration,
+                    repeat: Infinity,
+                    ease: "easeInOut",
                     }}
                 />
             ))}
+
 
         </motion.div>
     )
