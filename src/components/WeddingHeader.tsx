@@ -9,7 +9,7 @@ interface WeddingHeaderProps {
 
 const WeddingHeader = ({
     title = "The Wedding of Faiz & Dini", 
-    date = "Desember 22, 2025",
+    date = "22 Desember 2025",
     showDecoration = true 
 }: WeddingHeaderProps) => {
     return (

@@ -2,7 +2,7 @@ import { Flower2, Heart } from "lucide-react"
 import LoadingScreen from "../components/LoadingScreen"
 import WeddingHeader from "../components/WeddingHeader"
 import { useNavigate } from "react-router-dom"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 
 type Particle = {
@@ -13,12 +13,19 @@ type Particle = {
     duration: number
 }
 
-
-
 const EnterChat = () => {
     const navigate = useNavigate()
     const [progress, setProgress] = useState(0)
-    const [particles, setParticles] = useState<Particle[]>([])
+
+    const [particles] = useState<Particle[]>(() => 
+        Array.from({ length: 5 }).map(() => ({
+            size: Math.random() * 10 + 5,
+            left: Math.random() * 100,
+            top: Math.random() * 100,
+            xOffset: Math.random() * 10 - 5,
+            duration: Math.random() * 3 + 2,
+        }))
+    )
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -87,29 +94,29 @@ const EnterChat = () => {
                 <Heart className="size-14" />
             </motion.div>
 
-            {particlesRef.current.map((p, i) => (
+            {particles.map((p, i) => (
                 <motion.div
                     key={i}
                     className="absolute rounded-full bg-gold/10"
                     style={{
-                    width: p.size,
-                    height: p.size,
-                    left: `${p.left}%`,
-                    top: `${p.top}%`,
+                        width: p.size,
+                        height: p.size,
+                        left: `${p.left}%`,
+                        top: `${p.top}%`,
                     }}
+
                     animate={{
-                    y: [0, -20, 0],
-                    x: [0, p.xOffset, 0],
+                        y: [0, -20, 0],
+                        x: [0, p.xOffset, 0],
                     }}
+
                     transition={{
-                    duration: p.duration,
-                    repeat: Infinity,
-                    ease: "easeInOut",
+                        duration: p.duration,
+                        repeat: Infinity,
+                        ease: "easeInOut",
                     }}
                 />
             ))}
-
-
         </motion.div>
     )
 }

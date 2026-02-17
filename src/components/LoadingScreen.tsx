@@ -7,7 +7,7 @@ interface LoadingScreenProps{
 }
 
 const LoadingScreen = ({
-    message = 'Entering Chat...',
+    message = 'Memulai Chat...',
     progress = 65
 }: LoadingScreenProps) => {
     return (

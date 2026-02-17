@@ -1,26 +1,44 @@
 import { useToast } from '@/hooks/use-toast'
-import { Calendar, Camera, CheckCircle, Clock, Crown, Flower2, Heart, MapPin, Sparkles, Users, } from "lucide-react"
-import { useState } from "react"
+import { Heart, Sparkles, Users, } from "lucide-react"
+import { useState, useMemo, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import Confetti from 'react-confetti'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardContent } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { motion } from 'framer-motion'
+
+const floatingHearts = Array.from({ length: 8 }, () => ({
+    left: `${Math.random() * 100}%`,
+    top: `${Math.random() * 100}%`,
+    duration: Math.random() * 4 + 3,
+    delay: Math.random() * 2
+}))
 
 const Invitation = () => {
     const navigate = useNavigate()
     const { toast } = useToast()
     const [isJoining, setIsJoining] = useState(false)
-    const [hasJoined, setHasJoined] = useState(false)
     const [showConfetti, setShowConfetti] = useState(false)
+
     const [windowSize, setWindowSize] = useState({
         width: window.innerWidth,
         height: window.innerHeight
     })
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowSize({
+                width: window.innerWidth,
+                height: window.innerHeight
+            })
+        }
+
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
 
     const handleJoinGroup = async () => {
         setIsJoining(true)
@@ -28,7 +46,6 @@ const Invitation = () => {
         await new Promise(resolve => setTimeout(resolve, 2000))
 
         setIsJoining(false)
-        setHasJoined(true)
         setShowConfetti(true)
 
         toast({
@@ -42,12 +59,12 @@ const Invitation = () => {
         }, 3000)
     }
 
-    const guests = [
+    const guests = useMemo(() => [
         { name: "Sarah", role: "Bride", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" },
         { name: "James", role: "Groom", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=James" },
         { name: "Lisa", role: "Maid of Honor", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa" },
         { name: "Michael", role: "Best Man", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael" }
-    ]
+    ], [])
 
     return (
         <div className='min-h-screen flex items-center justify-center chat-walpaper relative overflow-hidden'>
@@ -65,24 +82,25 @@ const Invitation = () => {
                 <div className='absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-r from-rose-200/20 to-pink-200/20 rounded-full blur-3xl' />
                 <div className='absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-r from-emerald-200/20 to-cyan-200/20 rounded-full blur-3xl' />
 
-                {[...Array(8)].map((_, i) => (
+                {floatingHearts.map((heart, i) => (
                     <motion.div
                         key={i}
                         className='absolute'
                         style={{
-                            // eslint-disable-next-line react-hooks/purity
-                            left: `${Math.random() * 100}%`,
-                            // eslint-disable-next-line react-hooks/purity
-                            top: `${Math.random() * 100}%`,
+                            left: heart.left,
+                            top: heart.top,
                         }}
-                        animate={{
+
+                        animate={{ 
                             y: [0, -20, 0],
                             rotate: [0, 360]
                         }}
+
                         transition={{
-                            duration: Math.random() * 4 + 3,
+                            duration: heart.duration,
                             repeat: Infinity,
-                            ease: 'easeInOut'
+                            ease: 'easeInOut',
+                            delay: heart.delay
                         }}
                     >
                         <Heart className='w-6 h-6 text-rose-200/50' />
@@ -101,15 +119,15 @@ const Invitation = () => {
                         className='mb-4 border-emerald-200 text-green-600 bg-green-50'
                     >
                         <Sparkles className='w-3 h-3 mr-2' />
-                        Exclusive Invitation
+                        Undangan Eksklusif
                     </Badge>
 
-                    <h1 className='text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4'>
-                        Faiz & Dini
+                    <h1 className='text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4'>
+                        Untuk Mu
                     </h1>
 
                     <p className='text-green-600 mb-6 text-sm'>
-                        Invite you to join their special day celebration
+                        Kita mengundang Anda untuk bergabung dalam perayaan hari istimewa kita.
                     </p>
                 </motion.div>
 
@@ -144,7 +162,7 @@ const Invitation = () => {
                                 <div>
                                     <div className='flex items-center gap-2 mb-2'>
                                         <Users className='w-4 h-4 text-emerald-600' />
-                                        <span className='font-semibold text-emerald-900 text-sm'>150 guests joined</span>
+                                        <span className='font-semibold text-emerald-900 text-xs'>150 Undangan Bergabung</span>
                                     </div>
 
                                     <Progress value={75} className='h-2 bg-emerald-200' />
@@ -186,12 +204,12 @@ const Invitation = () => {
                             {isJoining ? (
                                 <>
                                     <div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent' />
-                                    Joining Group
+                                    Bergabung Group
                                 </>
                             ) : (
                                 <>
                                     <Heart className='mr-2 h-4 w-4' />
-                                    Join Wedding Group
+                                    Bergabung Grup
                                 </>
                             )}
                         </Button>
@@ -205,7 +223,7 @@ const Invitation = () => {
                     className='mt-10 pt-6 border-t border-gray-200 text-center flex flex-col gap-4'
                 >
                     <p className='text-xs text-green-600'>
-                        Created with <Heart className='inline w-3 h-3 text-rose-500' /> by FaizDini
+                        Dibuat <Heart className='inline w-3 h-3 text-rose-500' /> by FaizDini
                     </p>
                     <p className='text-xs text-green-500'>
                         © 2024 Faiz & Dini Wedding Celebration
