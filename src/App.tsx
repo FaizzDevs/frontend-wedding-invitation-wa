@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Invitation from './pages/Invitation'
 import WeddingChat from './pages/WeddingChat'
 import GroupInfo from './pages/GroupInfo'
+import "leaflet/dist/leaflet.css";
 
 function App() {
     return (

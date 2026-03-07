@@ -1,25 +1,71 @@
 import { AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Avatar } from "@radix-ui/react-avatar"
-import { ArrowLeft, Calendar, Camera, Check, CheckCheck, ChevronRight, Clock, Crown, Gift, Heart, Image, Lock, MapPin, Music, Phone, Send, Smile, Sparkles, Users, Video } from "lucide-react"
-import React, { useEffect, useRef, useState } from "react"
+import { ArrowLeft, Calendar, Check, CheckCheck, ChevronRight, ExternalLink, Heart, MapPin, Phone, Send, Sparkles, Video } from "lucide-react"
+import React, { useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
-import { format } from "date-fns"
+import { format } from "date-fns" 
+    
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
+import LiveMap from "@/components/LiveMap"
 
-interface Message {
+// type MessageType = 'text' | 'location' | 'event' | 'image'
+type SenderType = 'bride' | 'groom' | 'guest' | 'user'
+
+interface BaseMessage {
     id: string
-    text: string,
-    sender: 'bride' | 'groom' | 'guest' | 'user'
+    text: string
+    sender: SenderType
     senderName: string
     time: Date
     read: boolean
-    type?: 'text' | 'location' | 'event' | 'image'
-    metadata?: any
+}
+
+interface TextMessage extends BaseMessage {
+    type: 'text'
+}
+
+interface LocationMessage extends BaseMessage {
+    type: 'location'
+    metadata: {
+        image: string
+        address: string
+    }
+}
+
+interface EventMessage extends BaseMessage {
+    type: 'event'
+    metadata: {
+        title: string
+        url: string
+        icon: React.ReactNode
+    }
+}
+
+interface ImageMessage extends BaseMessage {
+    type: 'image'
+    metadata: {
+        url: string
+        caption?: string
+    }
+}
+
+type Message = TextMessage | LocationMessage | EventMessage | ImageMessage
+
+const isLocationMessage = (message: Message): message is LocationMessage => {
+    return message.type === 'location'
+}
+
+const isEventMessage = (message: Message): message is EventMessage => {
+    return message.type === 'event'
+}
+
+const isImageMessage = (message: Message): message is ImageMessage => {
+    return message.type === 'image'
 }
 
 const WeddingChat = () => {
@@ -27,6 +73,7 @@ const WeddingChat = () => {
     const messageEndRef = useRef<HTMLDivElement>(null)
     const [newMessage, setNewMessage] = useState('')
     const [isTyping, setIsTyping] = useState(false)
+    const [visibleMessages, setVisibleMessages] = useState(5)
 
     const [messages, setMessages] = useState<Message[]>([
         {
@@ -112,22 +159,6 @@ const WeddingChat = () => {
         }
     ])
 
-    const weddingDetails = [
-        { icon: Calendar, label: "Date", value: "June 24, 2024" },
-        { icon: MapPin, label: "Venue", value: "Rose Garden Estates" },
-        { icon: Clock, label: "Time", value: "3:00 PM onwards" },
-        { icon: Crown, label: "Theme", value: "Garden Royalty" }
-    ]
-
-        const quickActions = [
-        { icon: Calendar, label: "Add to Calendar" },
-        { icon: MapPin, label: "View Location" },
-        { icon: Gift, label: "Gift Registry" },
-        { icon: Users, label: "Guest List" },
-        { icon: Music, label: "Playlist" },
-        { icon: Camera, label: "Share Photos" }
-    ]
-
     const guests = [
         { name: "Alex", role: "Bride", color: "bg-pink-500", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" },
         { name: "Jordan", role: "Groom", color: "bg-emerald-500", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jordan" },
@@ -135,13 +166,11 @@ const WeddingChat = () => {
         { name: "Michael", role: "Best Man", color: "bg-blue-500", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael" }
     ]
 
-    const scrollToBottom = () => {
-        messageEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    const handleLoadMore = () => {
+        if (visibleMessages < messages.length) {
+            setVisibleMessages(prev => Math.min(prev + 5, messages.length))
+        }
     }
-
-    useEffect(() => {
-        scrollToBottom()
-    }, [messages])
 
     const handleSendMessage = () => {
         if (!newMessage.trim()) return
@@ -158,6 +187,8 @@ const WeddingChat = () => {
 
         setMessages(prev => [...prev, message])
         setNewMessage('')
+
+        setVisibleMessages(prev => prev + 1)
 
         setIsTyping(true)
         setTimeout(() => {
@@ -181,6 +212,7 @@ const WeddingChat = () => {
             }
 
             setMessages(prev => [...prev, reply])
+            setVisibleMessages(prev => prev + 1)
             setIsTyping(false)
         }, 1500 + Math.random() * 1000)
     }
@@ -193,63 +225,91 @@ const WeddingChat = () => {
     }
 
     const renderMessageContent = (message: Message) => {
-        switch (message.type) {
-            case 'location':
-                return (
-                    <div className="space-y-2">
-                        <div className="w-full aspect-video rounded-lg overflow-hidden bg-gray-100 relative">
-                            <div
-                                className="w-full h-full bg-cover bg-center"
-                                style={{ backgroundImage: `url(${message.metadata.image})` }}
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent flex items-end p-3">
+        if (isLocationMessage(message)) {
+            const yourHomeLink = "https://www.google.com/maps/place/Ali+Ma'sum+dan+Nur+Azizah/@-6.6134803,110.7275904,315m/data=!3m1!1e3!4m6!3m5!1s0x2e712137bee41315:0xc5b17dc5e47a3c3e!8m2!3d-6.6136875!4d110.7269375!16s%2Fg%2F11p09qqx12?entry=ttu&g_ep=EgoyMDI2MDMwNC4xIKXMDSoASAFQAw%3D%3D"
+
+            return (
+                <div className="space-y-2">
+                    <button
+                        onClick={() => {
+                            window.open(yourHomeLink, '_blank')
+                        }}
+                        className="w-full text-left"
+                    >
+                        <div className="w-full aspect-video rounded-lg overflow-hidden bg-gray-100 relative group">
+                            <LiveMap />
+                            
+                            <div className="absolute inset-0 flex items-end p-3">
                                 <div className="flex items-center gap-2 text-white">
                                     <MapPin className="w-4 h-4" />
-                                    <span className="text-xs font-medium">
+                                    <span className="text-xs font-medium line-clamp-1">
                                         {message.metadata.address}
                                     </span>
                                 </div>
                             </div>
-                        </div>
-                        <p className="text-sm">
-                            {message.text}
-                        </p>
-                    </div>
-                )
 
-            case 'event':
-                return (
-                    <div className="space-y-2">
-                        <p className="text-sm">
-                            {message.text}
-                        </p>
-
-                        <div className="flex items-center gap-3 rounded-lg bg-gradient-to-r from-pink-50 to-rose-50 p-3 border border-pink-100">
-                            <div className="size-10 bg-gradient-to-br from-pink-500 to-rose-500 rounded-lg flex items-center justify-center text-white shrink-0">
-                                {message.metadata.icon}
+                            <div className="absolute top-2 right-2 bg-white/90 rounded-full p-1">
+                                <ExternalLink className="w-4 h-4 text-[#2d6a4f]" />
                             </div>
-
-                            <div className="flex-1 overflow-hidden">
-                                <p className="text-gray-900 text-sm font-bold truncate">
-                                    {message.metadata.title}
-                                </p>
-                                <p className="text-gray-500 text-xs truncate">
-                                    {message.metadata.url}
-                                </p>
-                            </div>
-                            <ChevronRight className="h-4 w-4 text-gray-400" />
                         </div>
-                    </div>
-                )
-            
-            default:
-                return (
-                    <p className="text-sm whitespace-pre-wrap">
+                    </button>
+
+                    <p className="text-sm">
                         {message.text}
                     </p>
-                )
+                </div>
+            )
         }
+
+        if (isEventMessage(message)) {
+            return (
+                <div className="space-y-2">
+                    <p className="text-sm">
+                        {message.text}
+                    </p>
+
+                    <div className="flex items-center gap-3 rounded-lg bg-gradient-to-r from-pink-50 to-rose-50 p-3 border border-pink-100">
+                        <div className="size-10 bg-gradient-to-br from-pink-500 to-rose-500 rounded-lg flex items-center justify-center text-white shrink-0">
+                            {message.metadata.icon}
+                        </div>
+
+                        <div className="flex-1 overflow-hidden">
+                            <p className="text-gray-900 text-sm font-bold truncate">
+                                {message.metadata.title}
+                            </p>
+                            <p className="text-gray-500 text-xs truncate">
+                                {message.metadata.url}
+                            </p>
+                        </div>
+                        <ChevronRight className="h-4 w-4 text-gray-400" />
+                    </div>
+                </div>
+            )
+        }
+
+        if (isImageMessage(message)) {
+            return (
+                <div className="space-y-2">
+                    <img 
+                        src={message.metadata.url} 
+                        alt={message.metadata.caption || "Shared image"}
+                        className="rounded-lg max-w-full h-auto"
+                    />
+                    {message.metadata.caption && (
+                        <p className="text-sm">{message.metadata.caption}</p>
+                    )}
+                </div>
+            )
+        }
+
+        return (
+            <p className="text-sm whitespace-pre-wrap">
+                {message.text}
+            </p>
+        )
     }
+
+    
 
     return (
         <div className="flex flex-col h-screen bg-gradient-to-b from-[#fff0f3] to-white">
@@ -321,8 +381,23 @@ const WeddingChat = () => {
                 </div>
             </motion.header>
 
-            <ScrollArea className="flex-1 px-4 py-4">
+            <ScrollArea 
+                className="flex-1 px-4 py-4"
+            >
                 <div className="space-y-4">
+                    {visibleMessages < messages.length && (
+                        <div className="text-center">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={handleLoadMore}
+                                className="text-xs text-gray-500 hover:text-gray-700"
+                            >
+                                Load previous messages
+                            </Button>
+                        </div>
+                    )}
+
                     <div className="text-center my-6">
                         <Badge className="bg-white/80 py-1 text-gray-600 border border-gray-200 shadow-sm">
                             <Sparkles className="w-3 h-3 mr-2" />
@@ -331,7 +406,7 @@ const WeddingChat = () => {
                     </div>
 
                     <AnimatePresence>
-                        {messages.map((message, index) => {
+                        {messages.slice(-visibleMessages).map((message, index) => {
                             const isUser = message.sender === 'user'
                             const isCouple = message.sender === 'bride' || message.sender === 'groom'
 
