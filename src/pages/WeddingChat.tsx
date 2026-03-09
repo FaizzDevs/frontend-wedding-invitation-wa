@@ -13,7 +13,6 @@ import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import LiveMap from "@/components/LiveMap"
 
-// type MessageType = 'text' | 'location' | 'event' | 'image'
 type SenderType = 'bride' | 'groom' | 'guest' | 'user'
 
 interface BaseMessage {
@@ -231,10 +230,10 @@ const WeddingChat = () => {
             return (
                 <div className="space-y-2">
                     <button
+                        className="w-full text-left"
                         onClick={() => {
                             window.open(yourHomeLink, '_blank')
                         }}
-                        className="w-full text-left"
                     >
                         <div className="w-full aspect-video rounded-lg overflow-hidden bg-gray-100 relative group">
                             <LiveMap />

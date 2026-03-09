@@ -107,6 +107,7 @@
     .message-bubble.received {
         @apply bg-white/80 border border-deep-green/10 mr-auto;
     }
+
 }
 
 @media (max-width: 768px) {
@@ -115,13 +116,13 @@
     }
 }
 
-
-
 @layer base {
   * {
     @apply border-border;
     }
+    
   body {
     @apply bg-background text-foreground;
     }
 }
+
