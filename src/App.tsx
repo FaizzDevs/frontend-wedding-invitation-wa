@@ -5,6 +5,8 @@ import Invitation from './pages/Invitation'
 import WeddingChat from './pages/WeddingChat'
 import GroupInfo from './pages/GroupInfo'
 import "leaflet/dist/leaflet.css";
+import WeddingLiveCall from './pages/WeddingiveCall'
+import WeddingCall from './pages/WeddingCall'
 
 function App() {
     return (
@@ -20,6 +22,8 @@ function App() {
                     <Route path='/invitation' element={<Invitation />} />
                     <Route path='/chat' element={<WeddingChat />} />
                     <Route path='/info' element={<GroupInfo />} />
+                    <Route path='/live-call' element={<WeddingLiveCall />} />
+                    <Route path='/call' element={<WeddingCall />} />
                 </Routes>
             </motion.div>
         </AnimatePresence>

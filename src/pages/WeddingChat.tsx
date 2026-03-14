@@ -1,7 +1,7 @@
 import { AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Avatar } from "@radix-ui/react-avatar"
-import { ArrowLeft, Calendar, Check, CheckCheck, ChevronRight, ExternalLink, Heart, MapPin, Phone, Send, Sparkles, Video } from "lucide-react"
+import { ArrowLeft, Check, CheckCheck, ChevronRight, ExternalLink, Heart, MapPin, Phone, Send, Sparkles, Video } from "lucide-react"
 import React, { useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion"
@@ -72,55 +72,41 @@ const WeddingChat = () => {
     const messageEndRef = useRef<HTMLDivElement>(null)
     const [newMessage, setNewMessage] = useState('')
     const [isTyping, setIsTyping] = useState(false)
-    const [visibleMessages, setVisibleMessages] = useState(5)
+    const [visibleMessages, setVisibleMessages] = useState(8)
 
     const [messages, setMessages] = useState<Message[]>([
         {
             id: '1',
-            text: "Welcome to our big day! 🥂 We are so happy you're here.",
+            text: "Assalamu’alaikum Warahmatullahi Wabarakatuh 🙏\n\nDengan penuh rasa syukur dan kebahagiaan, kami ingin mengundang Bapak/Ibu/Saudara/i untuk hadir dalam hari bahagia pernikahan kami.",
             sender: 'bride',
-            senderName: 'Faiz & Dini',
+            senderName: 'Mempelai',
             time: new Date('2024-06-24T10:42:00'),
             read: true,
             type: 'text'
         },
         {
             id: '2',
-            text: "Save the date: June 24th, 2024. Please join us at the Rose Garden Estates!",
+            text: "InsyaAllah acara pernikahan kami akan dilaksanakan pada:\n\n📅 Senin, 24 Juni 2024\nKami sangat berharap kehadiran dan doa restu dari Bapak/Ibu/Saudara/i.",
             sender: 'groom',
-            senderName: 'Faiz & Dini',
+            senderName: 'Mempelai',
             time: new Date('2024-06-24T10:43:00'),
             read: true,
             type: 'text'
         },
         {
             id: '3',
-            text: "Click the link below to view our full itinerary and RSVP:",
+            text: "Silakan klik info grup untuk melihat detail acara dan melakukan konfirmasi kehadiran (RSVP):",
             sender: 'bride',
-            senderName: 'Faiz & Dini',
+            senderName: 'Mempelai',
             time: new Date('2024-06-24T10:44:00'),
             read: true,
-            type: 'event',
-            metadata: {
-                title: "Wedding Itinerary & RSVP",
-                url: "wedding-faiz-dini.com/rsvp",
-                icon: <Calendar className="w-5 h-5" />
-            }
-        },
+            type: 'text',
+        },     
         {
             id: '4',
-            text: "Can't wait to be there! We already marked our calendars! 🎉",
-            sender: 'user',
-            senderName: 'You',
-            time: new Date('2024-06-24T10:45:00'),
-            read: true,
-            type: 'text'
-        },
-        {
-            id: '5',
-            text: "Here is the location for the ceremony!",
+            text: "Berikut adalah lokasi acara pernikahan kami:",
             sender: 'groom',
-            senderName: 'Faiz & Dini',
+            senderName: 'Mempelai',
             time: new Date('2024-06-24T10:48:00'),
             read: true,
             type: 'location',
@@ -128,9 +114,18 @@ const WeddingChat = () => {
                 image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800",
                 address: "Rose Garden Estates, New York"
             }
-        },
+        },  
         {
             id: '6',
+            text: "Feel free buat kirim ucapan dan doa kalian di chat ini yaa 🤍🥂",
+            sender: 'groom',
+            senderName: 'Mempelai',
+            time: new Date('2024-06-24T10:55:00'),
+            read: true,
+            type: 'text'
+        },
+        {
+            id: '7',
             text: "What's the dress code for the event?",
             sender: 'guest',
             senderName: 'Sarah',
@@ -139,23 +134,14 @@ const WeddingChat = () => {
             type: 'text'
         },
         {
-            id: '7',
-            text: "Semi-formal / Garden Party attire please! 🌸",
-            sender: 'bride',
-            senderName: 'Faiz & Dini',
-            time: new Date('2024-06-24T10:52:00'),
+            id: '8',
+            text: "Can't wait to be there! We already marked our calendars! 🎉",
+            sender: 'user',
+            senderName: 'You',
+            time: new Date('2024-06-24T10:45:00'),
             read: true,
             type: 'text'
         },
-        {
-            id: '8',
-            text: "Don't forget to check out our gift registry!",
-            sender: 'groom',
-            senderName: 'Faiz & Dini',
-            time: new Date('2024-06-24T10:55:00'),
-            read: true,
-            type: 'text'
-        }
     ])
 
     const guests = [
@@ -365,6 +351,7 @@ const WeddingChat = () => {
                         variant='ghost'
                         size='icon'
                         className="text-white hover:bg-white/20"
+                        onClick={() => navigate('/live-call')}
                     >
                         <Video className="w-5 h-5" />
                     </Button>
@@ -372,6 +359,7 @@ const WeddingChat = () => {
                         variant='ghost'
                         size='icon'
                         className="text-white hover:bg-white/20"
+                        onClick={() => navigate('/call')}
                     >
                         <Phone className="w-5 h-5" />
                     </Button>
@@ -405,7 +393,9 @@ const WeddingChat = () => {
                     </div>
 
                     <AnimatePresence>
-                        {messages.slice(-visibleMessages).map((message, index) => {
+                        {messages
+                        .slice(-visibleMessages)
+                        .map((message, index) => {
                             const isUser = message.sender === 'user'
                             const isCouple = message.sender === 'bride' || message.sender === 'groom'
 

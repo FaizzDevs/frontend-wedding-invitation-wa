@@ -1,6 +1,8 @@
 import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api'
 import { useEffect, useRef, useState } from 'react'
 
+const API_KEY = import.meta.env.VITE_PUBLIC_GOOGLE_MAPS_API_KEY || ''
+
 const mapContainerStyle = {
     height: '500px',
     width: '100%',
@@ -71,7 +73,7 @@ export default function LiveMap() {
     }
 
     return (
-        <LoadScript googleMapsApiKey='AIzaSyA2lyqh-TLxH4kQuamX2EkbOZLqAQbn2x8'>
+        <LoadScript googleMapsApiKey={API_KEY}>
             <div style={{ position: 'relative', zIndex: 1, width: '100%', height: '100%', minHeight: isMobile ? '300px' : '400px' }}>
                 <GoogleMap
                     mapContainerStyle={mapContainerStyle}

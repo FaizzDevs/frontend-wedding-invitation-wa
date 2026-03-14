@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Calendar, Camera, ChevronRight, Church, Clock, Crown, FileText, Flower2Icon, MapPin, MoreVertical, PersonStanding, Search, Send, Smile, Sparkle, UserPlus, Users, Verified, Video } from "lucide-react"
+import { ArrowLeft, Calendar, Camera, ChevronRight, Church, Clock, Download, FileText, Flower2Icon, MapPin, MoreVertical, Search, Send, Smile, Sparkle, UserPlus, Users, Verified, Video } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { color, motion } from "framer-motion"
+import { motion } from "framer-motion"
 import { Separator } from "@/components/ui/separator"
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
@@ -48,6 +48,7 @@ const GroupInfo = () => {
         seconds: 30
     })
     const [wishMessage, setWishMessage] = useState('')
+    const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null)
 
     const events: Event[] = [
         {
@@ -72,9 +73,9 @@ const GroupInfo = () => {
 
     const mediaItems: MediaItem[] = [
         { id: '1', type: 'image', url: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', title: 'Wedding Rings' },
-        { id: '2', type: 'image', url: 'https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6', title: 'Wedding Bouquet' },
-        { id: '3', type: 'image', url: 'https://images.unsplash.com/photo-1519657337289-0776534f2b3f', title: 'Wedding Dress' },
-        { id: '4', type: 'video', url: 'https://images.unsplash.com/photo-1519741497674-611481863552', title: 'Venue Tour' },
+        { id: '2', type: 'image', url: 'https://asset.kompas.com/crops/oqkedR1xevyhQ42OK0GAPQCfOJg=/38x51:962x667/1200x800/data/photo/2020/03/02/5e5cf004a6805.jpg', title: 'Wedding Bouquet' },
+        { id: '3', type: 'image', url: 'https://image.idntimes.com/post/20211108/9-ed52ce8b7adc17db78f63d4bd1c2063d.jpg', title: 'Wedding Dress' },
+        { id: '4', type: 'video', url: 'https://i.pinimg.com/736x/61/b2/07/61b207fb32603ec63ef43bb04b813afb.jpg', title: 'Venue Tour' },
         { id: '5', type: 'document', url: '', title: 'Wedding Itinerary.pdf' }
     ]
 
@@ -160,19 +161,6 @@ const GroupInfo = () => {
             setWishMessage('')
         }
     }
-
-    // const getStatusBadge = (status: Guest['status']) => {
-    //     switch (status) {
-    //         case 'attending':
-    //             return <div>Attending</div>
-                
-    //         case 'maybe':
-    //             return <div>Maybe</div>
-
-    //         case 'pending':
-    //             return <div>Pending</div>
-    //     }
-    // }
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-pink-50/50 to-white">
@@ -364,7 +352,6 @@ const GroupInfo = () => {
                         </TabsTrigger>
                     </TabsList>
 
-                    {/* Tabs Events */}
                     <TabsContent value="events" className="space-y-4">
                         <h3 className="text-[#1a3a16] text-sm font-bold uppercase tracking-wider mb-4">
                             Event Schedule
@@ -425,60 +412,157 @@ const GroupInfo = () => {
                         
                     </TabsContent>
 
-                    {/* Tabs Media */}
                     <TabsContent value="media" className="space-y-4">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-[#1a3a16] text-sm font-bold">
-                                Media, Links & Docs
+                            <h3 className="text-[#1a3a16] text-sm font-bold uppercase tracking-wider">
+                                Our gallery
                             </h3>
-
-                            <div className="flex items-center gap-1 text-[#db2777] cursor-pointer hover:underline text-sm font-medium">
-                                <span>128 items</span>
+                            <Button 
+                                variant="ghost" 
+                                className="text-[#25D366] text-sm font-medium flex items-center gap-1 hover:bg-[#25D366]/10 p-0"
+                            >
+                                Lihat semua
                                 <ChevronRight className="w-4 h-4" />
+                            </Button>
+                        </div>
+
+                        <div className="overflow-x-auto scrollbar-hide pb-2 -mx-6 px-6">
+                            <div className="flex gap-2 min-w-max">
+                                {mediaItems
+                                    .filter(item => item.type === 'image' || item.type === 'video')
+                                    .map((item) => (
+                                        <div
+                                            key={item.id}
+                                            className="relative w-28 h-28 flex-shrink-0 cursor-pointer group overflow-hidden rounded-lg"
+                                            onClick={() => setSelectedMedia(item)}
+                                        >
+                                            {item.type === 'image' ? (
+                                                <img 
+                                                    src={item.url} 
+                                                    alt={item.title}
+                                                    className="w-full h-full object-cover transition-transform group-hover:scale-110" 
+                                                />
+                                            ) : (
+                                                <div className="relative w-full h-full">
+                                                    <img 
+                                                        src={item.url} 
+                                                        alt={item.title}
+                                                        className="w-full h-full object-cover transition-transform group-hover:scale-110" 
+                                                    />
+                                                    <div className="absolute inset-0 bg-black/30" />
+                                                    <div className="absolute inset-0 flex items-center justify-center">
+                                                        <div className="bg-black/60 rounded-full p-2">
+                                                            <Video className="w-4 h-4 text-white" />
+                                                        </div>
+                                                    </div>
+                                                    <div className="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] px-1 py-0.5 rounded">
+                                                        2:34
+                                                    </div>
+                                                </div>
+                                            )}
+                                            
+                                            <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity" />
+                                        </div>
+                                    ))}
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2">
-                            {mediaItems.map((item) => (
-                                <Card
-                                    key={item.id}
-                                    className="border-pink-100 rounded-s rounded-e overflow-hidden"
-                                >
-                                    <div className="aspect-square relative">
-                                        {item.type === 'image' && (
-                                            <>
-                                                <div className="absolute inset-0 bg-gradient-to-br from-pink-100 to-rose-100" />
-                                                <div className="absolute inset-0 flex items-center justify-center">
-                                                    <Camera className="w-8 h-8 text-purple-500" />
+                        {mediaItems.filter(item => item.type === 'document').length > 0 && (
+                            <div className="mt-4">
+                                <h4 className="text-sm font-medium text-[#1a3a16] mb-2">Dokumen</h4>
+                                <div className="space-y-2">
+                                    {mediaItems
+                                        .filter(item => item.type === 'document')
+                                        .map(item => (
+                                            <div key={item.id} className="flex items-center gap-3 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                                                <div className="bg-blue-100 p-2 rounded-lg">
+                                                    <FileText className="w-5 h-5 text-blue-600" />
                                                 </div>
-                                            </>
-                                        )}
-
-                                        {item.type === 'video' && (
-                                            <div className="absolute inset-0 bg-gradient-to-br from-purple-100 to-violet-100 flex items-center justify-center">
-                                                <Video className="w-8 h-8 text-purple-500" />
+                                                <div className="flex-1">
+                                                    <p className="text-sm font-medium">{item.title}</p>
+                                                    <p className="text-xs text-gray-500">PDF • 2.5 MB</p>
+                                                </div>
+                                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                    <Download className="w-4 h-4 text-gray-400" />
+                                                </Button>
                                             </div>
-                                        )}
+                                        ))}
+                                </div>
+                            </div>
+                        )}
 
-                                        {item.type === 'document' &&  (
-                                            <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center">
-                                                <FileText className="w-8 h-8 text-blue-500" />
+                        {selectedMedia && (
+                            <div
+                                className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
+                                onClick={() => setSelectedMedia(null)}
+                            >   
+                                <button
+                                    className="absolute top-4 right-4 text-white/70 hover:text-white z-10 p-2"
+                                    onClick={() => setSelectedMedia(null)}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+
+                                <button
+                                    className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2"
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        const items = mediaItems.filter(item => item.type === 'image' || item.type === 'video')
+                                        const currentIndex = items.findIndex(item => item.id === selectedMedia.id)
+                                        const nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0
+                                        setSelectedMedia(items[nextIndex])
+                                    }}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                    </svg>
+                                </button>
+
+                                <div
+                                    className="relative max-w-5xl max-h-[90vh] w-full h-full flex items-center justify-center"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    {selectedMedia.type === 'image' ? (
+                                        <img 
+                                            src={selectedMedia.url}
+                                            alt={selectedMedia.title}
+                                            className="max-w-full max-h-full object-contain rounded-lg"
+                                        />
+                                    ) : (
+                                        <div className="text-white text-center">
+                                            <div className="relative">
+                                                <img 
+                                                    src={selectedMedia.url}
+                                                    alt={selectedMedia.title}
+                                                    className="max-w-full max-h-[70vh] object-contain rounded-lg opacity-50"
+                                                />
+
+                                                <div className="absolute inset-0 flex items-center justify-center">
+                                                    <div className="bg-[#25D366] rounded-full p-6 cursor-pointer hover:scale-110 transition-transform">
+                                                        <Video className="w-12 h-12 text-white" />
+                                                    </div>
+                                                </div>
                                             </div>
-                                        )}
 
-                                        <Badge className="absolute top-2 right-2 text-[10px] px-1 py-0">
-                                            {item.type}
-                                        </Badge>
-                                    </div>
+                                            <p className="mt-4 text-sm text-white/70">
+                                                Klik tombol play untuk memutar video
+                                            </p>
+                                        </div>
+                                    )}
 
-                                    <CardContent className="p-2">
-                                        <p className="text-xs font-medium truncate">
-                                            {item.title}
+                                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+                                        <p className="text-white font-medium">{selectedMedia.title}</p>
+                                        <p className="text-white/70 text-sm">
+                                            {selectedMedia.type === 'image' ? 'Foto' : 'Video'}
                                         </p>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                     </TabsContent>
                 </Tabs>
 
