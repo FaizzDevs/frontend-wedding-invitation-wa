@@ -718,8 +718,6 @@ const GroupInfo = () => {
                                 </div>
                             ))}
                         </CardContent>
-
-                        
                     </Card>
                 </motion.section>
 
