@@ -74,13 +74,15 @@ const WeddingChat = () => {
     const [isTyping, setIsTyping] = useState(false)
     const [visibleMessages, setVisibleMessages] = useState(8)
 
+    const now = new Date()
+
     const [messages, setMessages] = useState<Message[]>([
         {
             id: '1',
             text: "Assalamu’alaikum Warahmatullahi Wabarakatuh 🙏\n\nDengan penuh rasa syukur dan kebahagiaan, kami ingin mengundang Bapak/Ibu/Saudara/i untuk hadir dalam hari bahagia pernikahan kami.",
             sender: 'bride',
             senderName: 'Mempelai',
-            time: new Date('2024-06-24T10:42:00'),
+            time: now,
             read: true,
             type: 'text'
         },
@@ -89,7 +91,7 @@ const WeddingChat = () => {
             text: "InsyaAllah acara pernikahan kami akan dilaksanakan pada:\n\n📅 Senin, 24 Juni 2024\nKami sangat berharap kehadiran dan doa restu dari Bapak/Ibu/Saudara/i.",
             sender: 'groom',
             senderName: 'Mempelai',
-            time: new Date('2024-06-24T10:43:00'),
+            time: new Date(now.getTime() + 1000),
             read: true,
             type: 'text'
         },
@@ -98,7 +100,7 @@ const WeddingChat = () => {
             text: "Silakan klik info grup untuk melihat detail acara dan melakukan konfirmasi kehadiran (RSVP):",
             sender: 'bride',
             senderName: 'Mempelai',
-            time: new Date('2024-06-24T10:44:00'),
+            time: new Date(now.getTime() + 2000),
             read: true,
             type: 'text',
         },     
@@ -107,7 +109,7 @@ const WeddingChat = () => {
             text: "Berikut adalah lokasi acara pernikahan kami:",
             sender: 'groom',
             senderName: 'Mempelai',
-            time: new Date('2024-06-24T10:48:00'),
+            time: new Date(now.getTime() + 3000),
             read: true,
             type: 'location',
             metadata: {
@@ -120,7 +122,7 @@ const WeddingChat = () => {
             text: "Feel free buat kirim ucapan dan doa kalian di chat ini yaa 🤍🥂",
             sender: 'groom',
             senderName: 'Mempelai',
-            time: new Date('2024-06-24T10:55:00'),
+            time: new Date(now.getTime() + 4000),
             read: true,
             type: 'text'
         },
@@ -129,7 +131,7 @@ const WeddingChat = () => {
             text: "What's the dress code for the event?",
             sender: 'guest',
             senderName: 'Sarah',
-            time: new Date('2024-06-24T10:50:00'),
+            time: new Date(now.getTime() + 5000),
             read: true,
             type: 'text'
         },
@@ -138,7 +140,7 @@ const WeddingChat = () => {
             text: "Can't wait to be there! We already marked our calendars! 🎉",
             sender: 'user',
             senderName: 'You',
-            time: new Date('2024-06-24T10:45:00'),
+            time: new Date(now.getTime() + 6000),
             read: true,
             type: 'text'
         },

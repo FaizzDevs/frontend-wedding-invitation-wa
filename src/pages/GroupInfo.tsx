@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Calendar, Camera, ChevronRight, Church, Clock, Download, FileText, Flower2Icon, MapPin, MoreVertical, Search, Send, Smile, Sparkle, UserPlus, Users, Verified, Video } from "lucide-react"
+import { ArrowLeft, Calendar, Camera, Check, ChevronRight, Church, Clock, Copy, CreditCard, Download, Eye, EyeOff, FileText, Flower2Icon, Gift, MapPin, MoreVertical, Search, Send, Smile, Sparkle, UserPlus, Users, Verified, Video, Wallet } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
@@ -39,6 +39,15 @@ interface MediaItem {
     title: string 
 }
 
+interface BankAccount {
+    id: string
+    bankName: string
+    accountNumber: string
+    accountName: string
+    icon: React.ReactNode
+    color: string
+}
+
 const GroupInfo = () => {
     const navigate = useNavigate()
     const [timeLeft, setTimeLeft] = useState({
@@ -49,6 +58,8 @@ const GroupInfo = () => {
     })
     const [wishMessage, setWishMessage] = useState('')
     const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null)
+    const [showBankNumbers, setShowBankNumbers] = useState<{[key: string]: boolean}>({})
+    const [copiedAccount, setCopiedAccount] = useState<string | null>(null)
 
     const events: Event[] = [
         {
@@ -130,6 +141,33 @@ const GroupInfo = () => {
         { icon: MapPin, label: 'Location', value: 'Jakarta, Indonesia' }
     ]
 
+    const bankAccounts: BankAccount[] = [
+        {
+            id: '1',
+            bankName: 'Bank Rakyat Indonesia (BRI)',
+            accountNumber: '1234567890',
+            accountName: 'Muhammad Faiz Al Izza',
+            icon: <CreditCard className="w-5 h-5" />,
+            color: 'from-blue-500 to-blue-600'
+        },
+        {
+            id: '2',
+            bankName: 'Bank Jago',
+            accountNumber: '1234567890',
+            accountName: 'Muhammad Faiz Al Izza',
+            icon: <Wallet className="w-5 h-5" />,
+            color: 'from-yellow-500 to-yellow-600'
+        },
+        {
+            id: '3',
+            bankName: 'Seabank',
+            accountNumber: '1234567890',
+            accountName: 'Muhammad Faiz Al Izza',
+            icon: <Gift className="w-5 h-5" />,
+            color: 'from-orange-500 to-orange-600'
+        },
+    ]
+
     useEffect(() => {
         const timer = setInterval(() => {
             setTimeLeft(prev => {
@@ -160,6 +198,19 @@ const GroupInfo = () => {
         if (wishMessage.trim()) {
             setWishMessage('')
         }
+    }
+
+    const toggleShowBankNumber = (bankId: string) => {
+        setShowBankNumbers(prev => ({
+            ...prev,
+            [bankId]: !prev[bankId]
+        }))
+    } 
+
+    const copyToClipboard = (text: string, bankId: string) => {
+        navigator.clipboard.writeText(text)
+        setCopiedAccount(bankId)
+        setTimeout(() => setCopiedAccount(null), 2000)
     }
 
     return (
@@ -238,7 +289,7 @@ const GroupInfo = () => {
                     </div>
                 </motion.div>
 
-                <Separator className="bg-pink-100" />
+                <Separator className="bg-pink-100 h-2" />
 
                 <motion.section
                     className="px-6 py-6"
@@ -267,7 +318,7 @@ const GroupInfo = () => {
                     </Card>
                 </motion.section>
 
-                <Separator className="bg-pink-100" />
+                <Separator className="bg-pink-100 h-2" />
 
                 <motion.section
                     className="px-6 py-6"
@@ -308,7 +359,7 @@ const GroupInfo = () => {
                     </p>
                 </motion.section>
 
-                <Separator className="bg-pink-100" />
+                <Separator className="bg-pink-100 h-2" />
 
                 <motion.section
                     className="px-6 py-6"
@@ -572,37 +623,103 @@ const GroupInfo = () => {
                     className="px-6 py-6"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
+                    transition={{ delay: 0.15 }}
                 >
-                    <h3 className="text-[#1A3A16] text-sm font-bold uppercase tracking-wider mb-4">
-                        Venue & Location
-                    </h3>
-                    <Card className="border-2 border-pink-100 overflow-hidden">
-                        <div className="aspect-video relative">
-                            <div className="absolute inset-0 bg-gradient-to-r from-green-100/50 to-pink-100/50" />
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <MapPin className="w-16 h-16 text-pink-400/50" />
-                            </div>
-                        </div>
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-[#1a3a16] text-sm font-bold uppercase tracking-wider">
+                            Wedding Gift
+                        </h3>
+                        <Badge variant='outline' className="bg-pink-50 text-pink-600 border-pink-200">
+                            Digital Wedding Gift
+                        </Badge>
+                    </div>
 
-                        <CardContent className="p-4 bg-gradient-to-r from-pink-50/30 to-rose-50/30">
-                            <div className="flex items-start gap-3 mb-4">
-                                <MapPin className="w-5 h-5 text-[#db2777] mt-1" />
+                    <Card className="border-pink-100 rounded-lg overflow-hidden">
+                        <div className="bg-gradient-to-r from-pink-500 to-rose-500 p-4">
+                            <div className="flex items-center gap-3 text-white">
+                                <Gift className="w-6 h-6" />
                                 <div>
-                                    <h4 className="font-bold text-[#1a3a16] mb-1">
-                                        The Grand Ballroom
-                                    </h4>
-                                    <p className="text-sm text-gray-600">
-                                        Jl. Wedding Celebration No. 1, South Jakarta, Indonesia
+                                    <p className="font-semibold">
+                                        Kirim Kado Digital
+                                    </p>
+                                    <p className="text-xs text-white/80">
+                                        Doa dan hadiah terbaik untuk kedua mempelai
                                     </p>
                                 </div>
                             </div>
+                        </div>
 
-                            <Button className="w-full py-2.5 flex items-center mb-4 justify-center gap-2 bg-white border border-pink-200 text-[#1a3a16] hover:bg-pink-50 shadow-sm">
-                                <MapPin className="w-4 h-4" />
-                                Get Directions
-                            </Button>
+                        <CardContent className="p-4 space-y-3">
+                            <p className="text-sm text-gray-600 mb-3">
+                                Bagi yang ingin mengirimkan hadiah pernikahan, dapat melalui rekening berikut:
+                            </p>
+
+                            {bankAccounts.map((bank) => (
+                                <div
+                                    key={bank.id}
+                                    className="border border-pink-100 rounded-lg p-4 hover:border-pink-200 transition-colors"
+                                >
+                                    <div className="flex items-start justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`size-10 rounded-full bg-gradient-to-r ${bank.color} flex items-center justify-center text-white`}>
+                                                {bank.icon}
+                                            </div>
+                                            <div>
+                                                <p className="font-semibold text-xs text-[#1a3a16]">{bank.bankName}</p>
+                                                <p className="text-xs text-gray-500">{bank.accountName}</p>
+                                            </div>
+                                        </div>
+
+                                        <Button
+                                            variant='ghost'
+                                            size='icon'
+                                            className="h-8 w-8 text-gray-400 hover:text-[#1a3a16]"
+                                            onClick={() => toggleShowBankNumber(bank.id)}
+                                        >
+                                            {showBankNumbers[bank.id] ? (
+                                                <EyeOff className="w-4 h-4" />
+                                            ) : (
+                                                <Eye className="w-4 h-4" />
+                                            )}
+                                        </Button>
+                                    </div>
+
+                                    {showBankNumbers[bank.id] && (
+                                        <motion.div
+                                            className="mt-3 flex items-center justify-between bg-pink-50/50 p-3 rounded-lg"
+                                            initial={{ opacity: 0, y: -10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                        >
+                                            <div>
+                                                <p className="text-xs text-gray-500">No. Rekening</p>
+                                                <p className="font-mono font-bold text-[]#1a3a16">{bank.accountNumber}</p>
+                                            </div>
+
+                                            <Button
+                                                variant='ghost'
+                                                size='sm'
+                                                className="h-8 text-[#25d366] hover:text-[#128C7E] hover:bg-[#25d366]/10"
+                                                onClick={() => copyToClipboard(bank.accountNumber, bank.id)}
+                                            >
+                                                {copiedAccount === bank.id ? (
+                                                    <>
+                                                        <Check className="w-4 h-4" />
+                                                        <span className="text-xs">Tersalin!</span>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Copy  className="w-4 h-4"/>
+                                                        <span className="text-xs">Salin</span>
+                                                    </>
+                                                )}
+                                            </Button>
+                                        </motion.div>
+                                    )}
+                                </div>
+                            ))}
                         </CardContent>
+
+                        
                     </Card>
                 </motion.section>
 
