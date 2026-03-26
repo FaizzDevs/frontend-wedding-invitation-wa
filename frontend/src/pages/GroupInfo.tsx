@@ -1,65 +1,22 @@
-import { Button } from "@/components/ui/button"
-import { ArrowLeft, Calendar, Camera, Check, ChevronRight, Church, Clock, Copy, CreditCard, Download, Eye, EyeOff, FileText, Flower2Icon, Gift, MapPin, MoreVertical, Search, Send, Smile, Sparkle, UserPlus, Users, Verified, Video, Wallet } from "lucide-react"
-import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { motion } from "framer-motion"
+// pages/GroupInfo.tsx
 import { Separator } from "@/components/ui/separator"
-import { Card, CardContent } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
-import { Avatar, AvatarImage } from "@/components/ui/avatar"
-import { Input } from "@/components/ui/input"
-
-interface Guest {
-    id: string
-    name: string
-    role: string
-    image: string
-    status: 'attending' | 'maybe' | 'pending'
-    message: string
-    isBrideGroom?: boolean
-}
-
-interface Event {
-    id: string
-    title: string
-    date: string
-    time: string
-    icon: React.ReactNode
-    color: string
-    location: string
-}
-
-interface MediaItem {
-    id: string
-    type: 'image' | 'video' | 'document'
-    url: string
-    title: string 
-}
-
-interface BankAccount {
-    id: string
-    bankName: string
-    accountNumber: string
-    accountName: string
-    icon: React.ReactNode
-    color: string
-}
+import { Calendar, Camera, Church, Flower2Icon, Clock, MapPin, Users, CreditCard, Wallet, Gift, Sparkle } from "lucide-react"
+import { GroupInfoHeader } from "@/components/group-info/GroupInfoHeader"
+import { CountdownTimer } from "@/components/group-info/CountdownTimer"
+import { WeddingDetails } from "@/components/group-info/WeddingDetails"
+import { EventSchedule } from "@/components/group-info/EventSchedule"
+import { MediaGallery } from "@/components/group-info/MediaGallery"
+import { WeddingGift } from "@/components/group-info/WeddingGift"
+import { ParticipantsList } from "@/components/group-info/ParticipantsList"
+import { WishInput } from "@/components/group-info/WishInput"
+import { useCountdown } from "@/hooks/useCountdown"
+import { Event, MediaItem, Guest, BankAccount, WeddingDetail } from "@/components/group-info/types"
+import { motion } from "framer-motion"
 
 const GroupInfo = () => {
-    const navigate = useNavigate()
-    const [timeLeft, setTimeLeft] = useState({
-        days: 124,
-        hours: 12,
-        minutes: 45,
-        seconds: 30
-    })
-    const [wishMessage, setWishMessage] = useState('')
-    const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null)
-    const [showBankNumbers, setShowBankNumbers] = useState<{[key: string]: boolean}>({})
-    const [copiedAccount, setCopiedAccount] = useState<string | null>(null)
+    const timeLeft = useCountdown()
+    const totalDays = 124 // You can calculate this dynamically
 
     const events: Event[] = [
         {
@@ -134,7 +91,7 @@ const GroupInfo = () => {
         }
     ]
 
-    const weddingDetails = [
+    const weddingDetails: WeddingDetail[] = [
         { icon: Calendar, label: 'Date', value: 'August 24, 2024' },
         { icon: Clock, label: 'Time', value: '8:00 AM onwards' },
         { icon: Users, label: 'Guests', value: '250 people' },
@@ -168,127 +125,21 @@ const GroupInfo = () => {
         },
     ]
 
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setTimeLeft(prev => {
-                const totalSeconds =
-                    prev.days * 86400 +
-                    prev.hours * 3600 +
-                    prev.minutes * 60 +
-                    prev.seconds - 1
-                
-                    if (totalSeconds <= 0) {
-                        clearInterval(timer)
-                        return { days: 0, hours: 0, minutes: 0, seconds: 0 }
-                    }
-
-                    return {
-                        days: Math.floor(totalSeconds / 86400),
-                        hours: Math.floor((totalSeconds % 86400) / 3600),
-                        minutes: Math.floor((totalSeconds % 3600) / 60),
-                        seconds: totalSeconds % 60
-                    }
-            })
-        }, 1000)
-
-        return () => clearInterval(timer)
-    } , [])
-
-    const handleSendWish = () => {
-        if (wishMessage.trim()) {
-            setWishMessage('')
-        }
-    }
-
-    const toggleShowBankNumber = (bankId: string) => {
-        setShowBankNumbers(prev => ({
-            ...prev,
-            [bankId]: !prev[bankId]
-        }))
-    } 
-
-    const copyToClipboard = (text: string, bankId: string) => {
-        navigator.clipboard.writeText(text)
-        setCopiedAccount(bankId)
-        setTimeout(() => setCopiedAccount(null), 2000)
+    const handleSendWish = (message: string) => {
+        // Handle sending wish - you can add API call here
+        console.log('Sending wish:', message)
     }
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-pink-50/50 to-white">
-            <motion.header
-                className="sticky top-0 z-50 flex items-center justify-between bg-white px-4 py-4 border-b border-pink-100 shadow-sm"
-                initial={{ y: -20 }}
-                animate={{ y: 0 }}
-            >
-                <div className="flex items-center gap-3">
-                    <Button
-                        variant='ghost'
-                        size='icon'
-                        className="rounded-full hover:bg-pink-50"
-                        onClick={() => navigate(-1)}
-                    >
-                        <ArrowLeft className="w-5 h-5" />
-                    </Button>
-
-                    <div className="flex flex-col">
-                        <h2 className="text-[#1a3a16] text-lg font-bold leading-tight">
-                            Group Info
-                        </h2>
-                        <p className="text-xs text-gray-500">
-                            Faiz & Dini's Wedding
-                        </p>
-                    </div>
-                </div>
-                <Button
-                    variant='ghost'
-                    className="rounded-full hover:bg-pink-50"
-                    size='icon'
-                >
-                    <MoreVertical className="w-5 h-5" />
-                </Button>
-            </motion.header>
+            <GroupInfoHeader 
+                title="Group Info"
+                subtitle="Faiz & Dini's Wedding"
+                createdDate="Dec 22, 2025"
+                participantsCount={250}
+            />
 
             <div className="pb-20">
-                <motion.div
-                    className="relative overflow-hidden"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                >
-                    <div className="aspect-[4/3] md:aspect-[21/9] relative ">
-                        <div className="absolute inset-0">
-                            <div className="w-full h-full bg-gradient-to-r from-green-500/20 to-pink-500/20" />
-                            <div className="bg-[url('https://images.unsplash.com/photo-1519741497674-611481863552')] bg-cover bg-center absolute inset-0 opacity-20" />
-                        </div>
-
-                        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/60 to-transparent" />
-
-                        <div className="absolute bottom-6 left-6 flex items-center gap-2">
-                            <h1 className="text-white text-2xl md:text-3xl font-bold">
-                                Faiz & Dini's Big Day
-                            </h1>
-                            <Verified className="w-6 h-6 text-[#25d366] fill-current" />
-                        </div>
-                    </div>
-
-                    <div className="px-6 py-4">
-                        <div className="flex items-center gap-4 text-xs text-gray-600">
-                            <div className="flex items-center gap-1">
-                                <Calendar className="w-4 h-4 mr-2" />
-                                <span>
-                                    Created on Dec 22, 2025
-                                </span>
-                            </div>
-
-                            <div className="flex items-center gap-1">
-                                <Users className="w-4 h-4 mr-2" />
-                                <span>
-                                    Group • 250 Participants
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </motion.div>
-
                 <Separator className="bg-pink-100 h-2" />
 
                 <motion.section
@@ -301,95 +152,28 @@ const GroupInfo = () => {
                         Description
                     </h3>
 
-                    <Card className="bg-gradient-to-r from-pink-50/50 to-rose-50/50 border-pink-100">
-                        <CardContent className="p-6">
-                            <p className="text-gray-800 text-[15px] leading-relaxed">
-                                We are getting married! Join us in celebrating our love and the start of our new Journey together.
-                                Your presence is our greatest gift. We Can't wait to see you there!
-                            </p>
+                    <div className="bg-gradient-to-r from-pink-50/50 to-rose-50/50 border border-pink-100 rounded-lg p-6">
+                        <p className="text-gray-800 text-[15px] leading-relaxed">
+                            We are getting married! Join us in celebrating our love and the start of our new Journey together.
+                            Your presence is our greatest gift. We Can't wait to see you there!
+                        </p>
 
-                            <div className="flex items-center gap-2 mt-4">
-                                <Sparkle className="w-4 h-4 text-pink-500" />
-                                <span className="text-xs text-gray-500">
-                                    #FaizDiniDec2025 • #TheBigDay
-                                </span>
-                            </div>
-                        </CardContent>
-                    </Card>
+                        <div className="flex items-center gap-2 mt-4">
+                            <Sparkle className="w-4 h-4 text-pink-500" />
+                            <span className="text-xs text-gray-500">
+                                #FaizDiniDec2025 • #TheBigDay
+                            </span>
+                        </div>
+                    </div>
                 </motion.section>
 
                 <Separator className="bg-pink-100 h-2" />
 
-                <motion.section
-                    className="px-6 py-6"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                >
-                    <h3 className="text-[#1a3a16] text-sm font-bold uppercase tracking-wider mb-6">
-                        Countdown to the I Do's
-                    </h3>
-
-                    <div className="grid grid-cols-4 gap-3">
-                        {Object.entries(timeLeft).map(([key, value]) => (
-                            <Card
-                                key={key}
-                                className="bg-gradient-to-b from-pink-50 to-white border-pink-100"
-                            >
-                                <CardContent className="p-4 text-center">
-                                    <motion.p
-                                        key={value}
-                                        className="text-[#1a3a16] text-lg font-extrabold"
-                                        initial={{ scale: 0.5 }}
-                                        animate={{ scale: 1 }}
-                                    >
-                                        {value.toString().padStart(2, '0')}
-                                    </motion.p>
-                                    <p className="text-[#db2777] text-[10px] uppercase font-bold mt-1">
-                                        {key}
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-
-                    <Progress value={75} className="mt-6 h-2 bg-pink-100" />
-                    <p className="text-xs text-gray-500 text-center mt-2">
-                        124 days to go!
-                    </p>
-                </motion.section>
+                <CountdownTimer timeLeft={timeLeft} totalDays={totalDays} />
 
                 <Separator className="bg-pink-100 h-2" />
 
-                <motion.section
-                    className="px-6 py-6"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                >
-                    <h3 className="text-[#1a3a16] text-sm font-bold uppercase tracking-wider mb-4">
-                        Wedding Details
-                    </h3>
-
-                    <div className="grid grid-cols-2 gap-3">
-                        {weddingDetails.map((detail) => (
-                            <Card key={detail.label} className="border-pink-100">
-                                <CardContent className="p-4 flex flex-col items-center text-center">
-                                    <div className="size-10 rounded-full bg-gradient-to-r from-pink-50 to-rose-50 flex items-center justify-center mb-2">
-                                        <detail.icon className="w-5 h-5 text-[#1a3a16]" />
-                                    </div>
-
-                                    <p className="text-xs text-gray-500">
-                                        {detail.label}
-                                    </p>
-                                    <p className="text-sm font-semibold text-[#1a3a16]">
-                                        {detail.value}
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-                </motion.section>
+                <WeddingDetails details={weddingDetails} />
 
                 <Tabs defaultValue="events" className="px-6 py-6">
                     <TabsList className="grid w-full grid-cols-2 mb-6 bg-pink-100/50">
@@ -404,412 +188,23 @@ const GroupInfo = () => {
                     </TabsList>
 
                     <TabsContent value="events" className="space-y-4">
-                        <h3 className="text-[#1a3a16] text-sm font-bold uppercase tracking-wider mb-4">
-                            Event Schedule
-                        </h3>
-                        {events.map((event) => (
-                            <Card
-                                key={event.id}
-                                className="border-pink-100 py-2 rounded-s rounded-e"
-                            >
-                                <CardContent className="p-4">
-                                    <div className="flex gap-4">
-                                        <div className={`size-9 text-white rounded-full bg-gradient-to-r ${event.color} flex items-center justify-center shrink-0`}>
-                                            {event.icon}
-                                        </div>
-
-                                        <div className="flex-1">
-                                            <div className="flex items-start justify-between">
-                                                <h4 className="font-bold text-sm text-[#1a3a16]">
-                                                    {event.title}
-                                                </h4>
-                                                <Badge className={cn(
-                                                    "text-xs",
-                                                    event.color.includes('green') ? 'bg-green-500/10 text-green-600' : 'bg-pink-500/10 text-pink-600'
-                                                )}>
-                                                    {event.color.includes('green') ? 'Ceremony' : 'Reception'}
-                                                </Badge>
-                                            </div>
-
-                                            <p className="text-xs text-gray-500 mt-1">
-                                                {event.date}
-                                            </p>
-                                            <p className="text-xs text-gray-500">
-                                                {event.time}
-                                            </p>
-
-                                            <div className="flex items-center gap-1 mt-2">
-                                                <MapPin className="w-3 h-3 text-gray-400" />
-                                                <span className="text-xs text-gray-500">
-                                                    {event.location}
-                                                </span>
-                                            </div>
-
-                                            <div className="flex flex-col gap-2 mt-4">
-                                                <Button size='sm' className={`text-xs h-8 bg-gradient-to-r ${event.color}`}>
-                                                    <Calendar className="w-3 h-3 mr-1" />
-                                                    Add to Calendar
-                                                </Button>
-                                                <Button size='sm' variant='outline' className="text-xs h-8">
-                                                    <MapPin className="w-3 h-3 mr-1" />
-                                                    Get Directions
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
-                        
+                        <EventSchedule events={events} />
                     </TabsContent>
 
                     <TabsContent value="media" className="space-y-4">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-[#1a3a16] text-sm font-bold uppercase tracking-wider">
-                                Our gallery
-                            </h3>
-                            <Button 
-                                variant="ghost" 
-                                className="text-[#25D366] text-sm font-medium flex items-center gap-1 hover:bg-[#25D366]/10 p-0"
-                            >
-                                Lihat semua
-                                <ChevronRight className="w-4 h-4" />
-                            </Button>
-                        </div>
-
-                        <div className="overflow-x-auto scrollbar-hide pb-2 -mx-6 px-6">
-                            <div className="flex gap-2 min-w-max">
-                                {mediaItems
-                                    .filter(item => item.type === 'image' || item.type === 'video')
-                                    .map((item) => (
-                                        <div
-                                            key={item.id}
-                                            className="relative w-28 h-28 flex-shrink-0 cursor-pointer group overflow-hidden rounded-lg"
-                                            onClick={() => setSelectedMedia(item)}
-                                        >
-                                            {item.type === 'image' ? (
-                                                <img 
-                                                    src={item.url} 
-                                                    alt={item.title}
-                                                    className="w-full h-full object-cover transition-transform group-hover:scale-110" 
-                                                />
-                                            ) : (
-                                                <div className="relative w-full h-full">
-                                                    <img 
-                                                        src={item.url} 
-                                                        alt={item.title}
-                                                        className="w-full h-full object-cover transition-transform group-hover:scale-110" 
-                                                    />
-                                                    <div className="absolute inset-0 bg-black/30" />
-                                                    <div className="absolute inset-0 flex items-center justify-center">
-                                                        <div className="bg-black/60 rounded-full p-2">
-                                                            <Video className="w-4 h-4 text-white" />
-                                                        </div>
-                                                    </div>
-                                                    <div className="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] px-1 py-0.5 rounded">
-                                                        2:34
-                                                    </div>
-                                                </div>
-                                            )}
-                                            
-                                            <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity" />
-                                        </div>
-                                    ))}
-                            </div>
-                        </div>
-
-                        {mediaItems.filter(item => item.type === 'document').length > 0 && (
-                            <div className="mt-4">
-                                <h4 className="text-sm font-medium text-[#1a3a16] mb-2">Dokumen</h4>
-                                <div className="space-y-2">
-                                    {mediaItems
-                                        .filter(item => item.type === 'document')
-                                        .map(item => (
-                                            <div key={item.id} className="flex items-center gap-3 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
-                                                <div className="bg-blue-100 p-2 rounded-lg">
-                                                    <FileText className="w-5 h-5 text-blue-600" />
-                                                </div>
-                                                <div className="flex-1">
-                                                    <p className="text-sm font-medium">{item.title}</p>
-                                                    <p className="text-xs text-gray-500">PDF • 2.5 MB</p>
-                                                </div>
-                                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                    <Download className="w-4 h-4 text-gray-400" />
-                                                </Button>
-                                            </div>
-                                        ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {selectedMedia && (
-                            <div
-                                className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
-                                onClick={() => setSelectedMedia(null)}
-                            >   
-                                <button
-                                    className="absolute top-4 right-4 text-white/70 hover:text-white z-10 p-2"
-                                    onClick={() => setSelectedMedia(null)}
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                                    </svg>
-                                </button>
-
-                                <button
-                                    className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2"
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                        const items = mediaItems.filter(item => item.type === 'image' || item.type === 'video')
-                                        const currentIndex = items.findIndex(item => item.id === selectedMedia.id)
-                                        const nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0
-                                        setSelectedMedia(items[nextIndex])
-                                    }}
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <polyline points="9 18 15 12 9 6"></polyline>
-                                    </svg>
-                                </button>
-
-                                <div
-                                    className="relative max-w-5xl max-h-[90vh] w-full h-full flex items-center justify-center"
-                                    onClick={(e) => e.stopPropagation()}
-                                >
-                                    {selectedMedia.type === 'image' ? (
-                                        <img 
-                                            src={selectedMedia.url}
-                                            alt={selectedMedia.title}
-                                            className="max-w-full max-h-full object-contain rounded-lg"
-                                        />
-                                    ) : (
-                                        <div className="text-white text-center">
-                                            <div className="relative">
-                                                <img 
-                                                    src={selectedMedia.url}
-                                                    alt={selectedMedia.title}
-                                                    className="max-w-full max-h-[70vh] object-contain rounded-lg opacity-50"
-                                                />
-
-                                                <div className="absolute inset-0 flex items-center justify-center">
-                                                    <div className="bg-[#25D366] rounded-full p-6 cursor-pointer hover:scale-110 transition-transform">
-                                                        <Video className="w-12 h-12 text-white" />
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <p className="mt-4 text-sm text-white/70">
-                                                Klik tombol play untuk memutar video
-                                            </p>
-                                        </div>
-                                    )}
-
-                                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                                        <p className="text-white font-medium">{selectedMedia.title}</p>
-                                        <p className="text-white/70 text-sm">
-                                            {selectedMedia.type === 'image' ? 'Foto' : 'Video'}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
+                        <MediaGallery mediaItems={mediaItems} />
                     </TabsContent>
                 </Tabs>
 
                 <Separator className="bg-pink-100 h-2" />
 
-                <motion.section
-                    className="px-6 py-6"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.15 }}
-                >
-                    <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-[#1a3a16] text-sm font-bold uppercase tracking-wider">
-                            Wedding Gift
-                        </h3>
-                        <Badge variant='outline' className="bg-pink-50 text-pink-600 border-pink-200">
-                            Digital Wedding Gift
-                        </Badge>
-                    </div>
-
-                    <Card className="border-pink-100 rounded-lg overflow-hidden">
-                        <div className="bg-gradient-to-r from-pink-500 to-rose-500 p-4">
-                            <div className="flex items-center gap-3 text-white">
-                                <Gift className="w-6 h-6" />
-                                <div>
-                                    <p className="font-semibold">
-                                        Kirim Kado Digital
-                                    </p>
-                                    <p className="text-xs text-white/80">
-                                        Doa dan hadiah terbaik untuk kedua mempelai
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <CardContent className="p-4 space-y-3">
-                            <p className="text-sm text-gray-600 mb-3">
-                                Bagi yang ingin mengirimkan hadiah pernikahan, dapat melalui rekening berikut:
-                            </p>
-
-                            {bankAccounts.map((bank) => (
-                                <div
-                                    key={bank.id}
-                                    className="border border-pink-100 rounded-lg p-4 hover:border-pink-200 transition-colors"
-                                >
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className={`size-10 rounded-full bg-gradient-to-r ${bank.color} flex items-center justify-center text-white`}>
-                                                {bank.icon}
-                                            </div>
-                                            <div>
-                                                <p className="font-semibold text-xs text-[#1a3a16]">{bank.bankName}</p>
-                                                <p className="text-xs text-gray-500">{bank.accountName}</p>
-                                            </div>
-                                        </div>
-
-                                        <Button
-                                            variant='ghost'
-                                            size='icon'
-                                            className="h-8 w-8 text-gray-400 hover:text-[#1a3a16]"
-                                            onClick={() => toggleShowBankNumber(bank.id)}
-                                        >
-                                            {showBankNumbers[bank.id] ? (
-                                                <EyeOff className="w-4 h-4" />
-                                            ) : (
-                                                <Eye className="w-4 h-4" />
-                                            )}
-                                        </Button>
-                                    </div>
-
-                                    {showBankNumbers[bank.id] && (
-                                        <motion.div
-                                            className="mt-3 flex items-center justify-between bg-pink-50/50 p-3 rounded-lg"
-                                            initial={{ opacity: 0, y: -10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                        >
-                                            <div>
-                                                <p className="text-xs text-gray-500">No. Rekening</p>
-                                                <p className="font-mono font-bold text-[]#1a3a16">{bank.accountNumber}</p>
-                                            </div>
-
-                                            <Button
-                                                variant='ghost'
-                                                size='sm'
-                                                className="h-8 text-[#25d366] hover:text-[#128C7E] hover:bg-[#25d366]/10"
-                                                onClick={() => copyToClipboard(bank.accountNumber, bank.id)}
-                                            >
-                                                {copiedAccount === bank.id ? (
-                                                    <>
-                                                        <Check className="w-4 h-4" />
-                                                        <span className="text-xs">Tersalin!</span>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <Copy  className="w-4 h-4"/>
-                                                        <span className="text-xs">Salin</span>
-                                                    </>
-                                                )}
-                                            </Button>
-                                        </motion.div>
-                                    )}
-                                </div>
-                            ))}
-                        </CardContent>
-                    </Card>
-                </motion.section>
+                <WeddingGift bankAccounts={bankAccounts} />
 
                 <Separator className="bg-pink-100 h-2" />
 
-                <div className="space-y-4 px-6 py-6">
-                    <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-[#1a3a16] text-sm font-bold">
-                            250 Participants
-                        </h3>
-                        <Button variant='ghost' size='icon' className="text-[#db2777]">
-                            <Search className="w-4 h-4" />
-                        </Button>
-                    </div>
+                <ParticipantsList guests={guests} totalCount={250} />
 
-                    <div className="border-pink-100 rounded-s rounded-e">
-                        <div className="px-4">
-                            <div className="flex items-center gap-4 cursor-pointer group">
-                                <div className="size-8 rounded-full bg-gradient-to-r from-[#25d366] to-[#128c7E] flex items-center justify-center group-hover:shadow-lg shadow-[#25d366]/20 transition-all">
-                                    <UserPlus className="w-4 h-4 text-white" />
-                                </div>
-
-                                <div>
-                                    <span className="font-bold text-[#25d366] text-[13px]">
-                                        Confirm Your RSVP / Join Group
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="space-y-4">
-                        {guests.map((guest) => (
-                            <div
-                                key={guest.id}
-                                className="border-pink-100 rounded-s rounded-e"
-                            >
-                                <div className="px-4">
-                                    <div className="flex items-start gap-4 pb-2">
-                                        <Avatar className={cn(
-                                            "size-8 ring-2",
-                                            guest.isBrideGroom ? "ring-pink-300" : "ring-pink-100"
-                                        )}>
-                                            <AvatarImage src={guest.image} />
-                                        </Avatar>
-
-                                        <div className="flex-1">
-                                            <div className="flex justify-between items-center">
-                                                <div>
-                                                    <h4 className="font-bold text-[#1a3a16]">
-                                                        {guest.name}
-                                                    </h4>
-                                                    <p className="text-xs text-gray-500 italic">
-                                                        "{guest.message}"
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div className="h-px w-full bg-pink-500/20" />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                <motion.div
-                className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-pink-100 p-4"
-            >
-                <div className="max-w-[500px] mx-auto flex items-center gap-3">
-                    <div className="flex-1 bg-gradient-to-r from-pink-50/40 to-rose-50/40 rounded-full flex items-center px-4 border border-pink-100">
-                        <Button variant='ghost' size='icon' className="text-[#db2777]">
-                            <Smile className="w-5 h-5" />
-                        </Button>
-
-                        <Input 
-                                placeholder="Leave a wish for the couple..."
-                                value={wishMessage}
-                                onChange={(e) => setWishMessage(e.target.value)}
-                                className="border-0 bg-transparent focus-visible:ring-0 placeholder:text-pink-300 placeholder:text-sm"
-                                onKeyDown={(e) => e.key === 'Enter' && handleSendWish()}
-                            />
-                        </div>
-
-                        <Button
-                            className="size-8 rounded-full bg-gradient-to-r from-[#25d366] to-[#128C7E] shadow-lg shadow-[#25d366]/30 hover:scale-105 transition-transform disabled:opacity-50"
-                        >
-                            <Send className="text-white w-5 h-5" />
-                        </Button>
-                    </div>
-                </motion.div>
+                <WishInput onSendWish={handleSendWish} />
             </div>
         </div>
     )

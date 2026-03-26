@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Camera, MicOff, Phone, UserPlus, Volume2 } from "lucide-react"
+import { Camera, MicOff, PhoneOff, UserPlus, Volume2 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import videokol from '/videokol.mp4'
 
@@ -8,14 +8,6 @@ const WeddingLiveCall = () => {
 
     return(
         <div className="relative flex h-screen w-full flex-col bg-background-dark overflow-hidden max-w-md mx-auto shadow-2xl">
-            <Button
-                variant='ghost'
-                size='icon'
-                onClick={() => navigate(-1)}
-                className="absolute top-4 left-4 z-20 text-slate-100 hover:bg-white/20 rounded-full"
-            >
-                <ArrowLeft className="w-6 h-6" />
-            </Button>
 
             <div className="absolute inset-0 z-0">
                 <video
@@ -33,7 +25,7 @@ const WeddingLiveCall = () => {
                 <div className="flex items-center gap-3">
                     <div className="flex flex-col">
                         <h2 className="text-slate-100 text-lg font-bold leading-tight tracking-tight">
-                            Live from the reception
+                            Halo Semuanya!!
                         </h2>
                         <span className="text-slate-300 text-sm font-medium">
                             04.22
@@ -63,7 +55,7 @@ const WeddingLiveCall = () => {
                 <div className="flex items-center justify-between bg-black/40 backdrop-blur-xl rounded-xl border border-white/10">
                     <Button
                         variant='ghost'
-                        className="flex flex-col items-center gap-1 h-auto py-2 px-3 hover:bg-white/20 text-slate-100"
+                        className="flex flex-col items-center gap-1 h-auto py-2 px-3 hover:bg-white/1 text-slate-100"
                     >
                         <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10">
                             <MicOff className="w-6 h-6" />
@@ -72,7 +64,7 @@ const WeddingLiveCall = () => {
 
                     <Button
                         variant='ghost'
-                        className="flex flex-col items-center gap-1 h-auto py-2 px-3 hover:bg-white/20 text-slate-100"
+                        className="flex flex-col items-center gap-1 h-auto py-2 px-3 hover:bg-white/1 text-slate-100"
                     >
                         <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10">
                             <Camera className="w-6 h-6" />
@@ -81,7 +73,7 @@ const WeddingLiveCall = () => {
 
                     <Button
                         variant='ghost'
-                        className="flex flex-col items-center gap-1 h-auto py-2 px-3 hover:bg-white/20 text-slate-100"
+                        className="flex flex-col items-center gap-1 h-auto py-2 px-3 hover:bg-white/1 text-slate-100"
                     >
                         <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10">
                             <Volume2 className="w-6 h-6" />
@@ -90,10 +82,11 @@ const WeddingLiveCall = () => {
 
                     <Button
                         variant='ghost'
-                        className="flex flex-col items-center gap-1 h-auto py-2 px-3 hover:bg-white/20 text-slate-100"
+                        className="flex flex-col items-center gap-1 h-auto py-2 px-3 hover:bg-white/1 text-slate-100"
+                        onClick={() => navigate(-1)}
                     >
-                        <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10">
-                            <Phone className="w-6 h-6" />
+                        <div className="w-14 h-14 flex items-center justify-center rounded-full bg-red-500">
+                            <PhoneOff className="w-6 h-6" />
                         </div>
                     </Button>
                 </div>
